@@ -6,19 +6,21 @@ public class CharacterController : MonoBehaviour
 {
     [SerializeField] private Animator characterAnimator;
     [SerializeField] private Transform cameraTransform;
+    [SerializeField] private Camera mainCamera;
 
+    [SerializeField] private Renderer characterMainObject;
+    [SerializeField] private Renderer characterSecondObject;
 
     void Start()
     {
-        SetCharacterStatus(0); 
+        SetCharacterStatus("2"); 
 
-        SetCameraZoom(0.5f);
         //Invoke("LateSet",3);
     }
 
     void LateSet()
     {
-        SetCharacterStatus(3);
+        SetCharacterStatus("3");
     }
 
     void Update()
@@ -26,16 +28,50 @@ public class CharacterController : MonoBehaviour
         
     }
 
-    public void SetCameraZoom(float zoomLevel)
+    public void SetMainColor(string hexColor)
     {
+        Color newColor = new Color();
+
+        if ( ColorUtility.TryParseHtmlString(hexColor, out newColor))
+        { 
+            characterMainObject.material.color = newColor;
+        }
+        
+    }
+    public void SetSecondsColor(string hexColor)
+    {
+        Color newColor = new Color();
+
+        if ( ColorUtility.TryParseHtmlString(hexColor, out newColor))
+        { 
+            characterSecondObject.material.color = newColor;
+        }
+        
+    }
+
+    public void SetBackgroundColor(string hexColor)
+    {
+        Color newColor = new Color();
+
+        if ( ColorUtility.TryParseHtmlString(hexColor, out newColor))
+        { 
+            mainCamera.backgroundColor = newColor;
+        }
+        
+    }
+
+    public void SetCameraZoom(string val)
+    {
+        float zoomLevel = float.Parse(val);
         float zPos = Mathf.Lerp(-3f, -0.8f, zoomLevel);
         Vector3 newCameraPos = new Vector3(0, 1.37f, zPos);
 
         iTween.MoveTo(cameraTransform.gameObject, newCameraPos, 0.3f);
     }
 
-    public void SetCharacterStatus(int newStatus)
+    public void SetCharacterStatus(string val)
     {
+        int newStatus = int.Parse(val);
         CharacterStatus tempStatus = (CharacterStatus) newStatus;
         float currentTalkBlend = characterAnimator.GetFloat("TalkBlend");
         float targetTalkBlend = 0;
